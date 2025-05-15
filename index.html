@@ -730,5 +730,39 @@
       });
     });
   </script>
+  <script>
+  const form = document.getElementById('form');
+  const mensaje = document.getElementById('mensaje');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const nombre = document.getElementById('nombre').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const fecha = document.getElementById('fecha').value;
+    const hora = document.getElementById('hora').value;
+
+    const datos = { nombre, telefono, fecha, hora };
+
+    fetch("https://script.google.com/macros/s/AKfycbzjSUrE-_l0bINWjh_wjk6F2FCGYZmrzNl6rJLoNnN5NMOzejWeuU3T3RfUCg26yAmsAQ/exec", {
+      method: "POST",
+      body: JSON.stringify(datos),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.text())
+    .then(msg => {
+      console.log(msg);
+      mensaje.classList.remove('hidden');
+      form.reset();
+      setTimeout(() => mensaje.classList.add('hidden'), 3000);
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error al enviar la reserva");
+    });
+  });
+</script>
 </body>
 </html>
