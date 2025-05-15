@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reserva tu cita</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 400px; margin: 40px auto; }
+  label { display: block; margin-top: 10px; }
+  input, select, button { width: 100%; padding: 8px; margin-top: 5px; }
+  button { background-color: #00897B; color: white; border: none; cursor: pointer; }
+  button:hover { background-color: #00695C; }
+  #mensaje { margin-top: 20px; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h2>Reserva tu cita</h2>
+
+<form id="formReserva">
+  <label for="nombre">Nombre:</label>
+  <input type="text" id="nombre" name="nombre" required />
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" required />
+
+  <label for="fecha">Fecha:</label>
+  <input type="date" id="fecha" name="fecha" required />
+
+  <label for="hora">Hora:</label>
+  <input type="time" id="hora" name="hora" required />
+
+  <button type="submit">Reservar</button>
+</form>
+
+<div id="mensaje"></div>
+
+<script>
+  const urlAPI = 'https://script.google.com/macros/s/AKfycbx-DTCEEsnRyc-ItY-nb3ENgG570O8lUTV9DwSMeegf9d3RBdGMZa67bjhPbF1XBYEi/exec'; // Pega aquí la URL que te dio Apps Script
+
+  const form = document.getElementById('formReserva');
+  const mensaje = document.getElementById('mensaje');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const data = {
+      nombre: form.nombre.value.trim(),
+      email: form.email.value.trim(),
+      fecha: form.fecha.value,
+      hora: form.hora.value,
+    };
+
+    try {
+      const response = await fetch(urlAPI, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const result = await response.json();
+
+      if(result.status === "ok") {
+        mensaje.style.color = "green";
+        mensaje.textContent = "Reserva enviada con éxito. ¡Gracias!";
+        form.reset();
+      } else {
+        mensaje.style.color = "red";
+        mensaje.textContent = "Error: " + (result.message || "Inténtalo otra vez.");
+      }
+    } catch(err) {
+      mensaje.style.color = "red";
+      mensaje.textContent = "Error al enviar la reserva.";
+    }
+  });
+</script>
+
+</body>
+</html>
